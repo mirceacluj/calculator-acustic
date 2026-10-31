@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculator Incinte Acustice - Subwoofer</title>
+    <style>
+        body {
+            background-color: #121212;
+            color: #e0e0e0;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: #1e1e1e;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+        }
+        h2 {
+            text-align: center;
+            color: #4CAF50;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #b0b0b0;
+        }
+        input {
+            width: 100%;
+            padding: 10px;
+            background: #2d2d2d;
+            border: 1px solid #444;
+            color: #fff;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        button {
+            width: 100%;
+            padding: 12px;
+            background: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            cursor: pointer;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+        button:hover {
+            background: #45a049;
+        }
+        .results {
+            margin-top: 25px;
+            background: #252525;
+            padding: 15px;
+            border-radius: 6px;
+            border-left: 4px solid #4CAF50;
+        }
+        .results h3 {
+            margin-top: 0;
+            color: #4CAF50;
+        }
+        .result-item {
+            margin: 8px 0;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Calculator Incinte Subwoofer</h2>
+    
+    <div class="form-group">
+        <label for="fs">Fs - Frecvența de rezonanță (Hz):</label>
+        <input type="number" id="fs" value="35.0" step="0.1">
+    </div>
+
+    <div class="form-group">
+        <label for="qts">Qts - Factor de calitate total:</label>
+        <input type="number" id="qts" value="0.40" step="0.01">
+    </div>
+
+    <div class="form-group">
+        <label for="vas">Vas - Volum echivalent (litri):</label>
+        <input type="number" id="vas" value="50.0" step="0.1">
+    </div>
+
+    <div class="form-group">
+        <label for="qtc">Qtc dorit (Incintă Închisă, ex: 0.707):</label>
+        <input type="number" id="qtc" value="0.707" step="0.001">
+    </div>
+
+    <div class="form-group">
+        <label for="diametru">Diametru tub Bass-Reflex (cm):</label>
+        <input type="number" id="diametru" value="7.0" step="0.1">
+    </div>
+
+    <button onclick="calculeaza()">Calculează Incintele</button>
+
+    <div class="results" id="rezultate">
+        <h3>Rezultate:</h3>
+        <div class="result-item">Introdu parametrii și apasă butonul de calcul.</div>
+    </div>
+</div>
+
+<script>
+function calculeaza() {
+    let fs = parseFloat(document.getElementById('fs').value);
+    let qts = parseFloat(document.getElementById('qts').value);
+    let vas = parseFloat(document.getElementById('vas').value);
+    let qtc_dorit = parseFloat(document.getElementById('qtc').value);
+    let diametru_cm = parseFloat(document.getElementById('diametru').value);
+
+    let rezDiv = document.getElementById('rezultate');
+
+    if (qtc_dorit <= qts) {
+        rezDiv.innerHTML = `<h3>Eroare:</h3><div class="result-item" style="color: #ff6b6b;">Qtc dorit trebuie să fie strict mai mare decât Qts!</div>`;
+        return;
+    }
+
+    // 1. Incinta Închisă
+    let vb_inchis = vas / (Math.pow(qtc_dorit / qts, 2) - 1);
+    let fc_inchis = fs * (qtc_dorit / qts);
+
+    // 2. Incinta Bass-Reflex
+    let vb_br = 15 * Math.pow(qts, 2.5) * vas;
+    let fb_br = fs * Math.pow(vas / vb_br, 0.32);
+
+    // 3. Lungime tub Bass-Reflex (Helmholtz)
+    let c = 344.0;
+    let vb_m3 = vb_br / 1000.0;
+    let r_m = (diametru_cm / 100.0) / 2.0;
+    let s_m2 = Math.PI * Math.pow(r_m, 2);
+    let delta_m = 0.82 * (diametru_cm / 100.0);
+
+    let termen = (Math.pow(c, 2) * s_m2) / (4 * Math.pow(Math.PI, 2) * Math.pow(fb_br, 2) * vb_m3);
+    let lp_m = termen - delta_m;
+    let lungime_tub_cm = lp_m * 100.0;
+
+    // Afișare rezultate
+    rezDiv.innerHTML = `
+        <h3>Rezultate Calcul:</h3>
+        <div class="result-item"><strong>1. Incintă Închisă (Sealed):</strong></div>
+        <div class="result-item">&nbsp;&bull; Volum incintă (Vb): <strong>${vb_inchis.toFixed(2)} litri</strong></div>
+        <div class="result-item">&nbsp;&bull; Frecvență rezonanță (Fc): <strong>${fc_inchis.toFixed(2)} Hz</strong></div>
+        <hr style="border-color: #444; margin: 10px 0;">
+        <div class="result-item"><strong>2. Incintă Bass-Reflex:</strong></div>
+        <div class="result-item">&nbsp;&bull; Volum incintă optim (Vb): <strong>${vb_br.toFixed(2)} litri</strong></div>
+        <div class="result-item">&nbsp;&bull; Frecvență de acord (Fb): <strong>${fb_br.toFixed(2)} Hz</strong></div>
+        <hr style="border-color: #444; margin: 10px 0;">
+        <div class="result-item"><strong>3. Tub Bass-Reflex (${diametru_cm} cm diametru):</strong></div>
+        <div class="result-item">&nbsp;&bull; Lungime calculată tub (Lp): <strong>${lungime_tub_cm.toFixed(2)} cm</strong></div>
+    `;
+}
+
+// Calculează automat la încărcare
+window.onload = calculeaza;
+</script>
+
+</body>
+</html>
