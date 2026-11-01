@@ -221,7 +221,7 @@ function calculeaza() {
     if (lungime_tub_cm <= 0) {
         sectiune_tub_rezultat = `<div class="result-item" style="color: #ff6b6b;">&nbsp;&bull; Lungime tub necesară: <b>Imposibil fizic</b> (Volumul cutiei e prea mic sau tubul ales e prea gros. Mărește manual volumul sau alege un tub mai subțire).</div>`;
     } else {
-        sectiune_tub_rezultat = `&nbsp;&bull; Lungime tub necesară (Lp): <strong>${lungime_tub_cm.toFixed(2)} cm</strong>`;
+        sectiune_tub_rezultat = `<div class="result-item">&nbsp;&bull; Lungime tub necesară (Lp): <strong>${lungime_tub_cm.toFixed(2)} cm</strong></div>`;
     }
 
     // Afișare rezultate clare
@@ -236,4 +236,21 @@ function calculeaza() {
         
         <div class="result-item"><strong>2. Varianta: Incintă Bass-Reflex (Vented)</strong></div>
         <div class="result-item">&nbsp;&bull; Volumul interior optim al cutiei (Vb): <strong>${vb_br.toFixed(2)} litri</strong></div>
-eof
+        <div class="result-item">&nbsp;&bull; Frecvența de acord (Fb): <strong>${fb_br.toFixed(2)} Hz</strong></div>
+        
+        <hr style="border-color: #444; margin: 15px 0;">
+        
+        <div class="result-item"><strong>3. Tub Bass-Reflex (${diametru_cm} cm diametru):</strong></div>
+        ${sectiune_tub_rezultat}
+        ${avertisment_tub}
+    `;
+}
+
+// Rulează calculul automat și la pornire pentru valorile implicite
+window.onload = function() {
+    calculeaza();
+};
+</script>
+
+</body>
+</html>
