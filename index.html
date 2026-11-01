@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculator Incinte Acustice - Subwoofer</title>
+    <style>
+        body {
+            background-color: #121212;
+            color: #e0e0e0;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: #1e1e1e;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+        }
+        h2 {
+            text-align: center;
+            color: #4CAF50;
+            margin-bottom: 5px;
+        }
+        .subtitle {
+            text-align: center;
+            color: #888;
+            font-size: 14px;
+            margin-bottom: 25px;
+        }
+        .form-group {
+            margin-bottom: 18px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #fff;
+            font-weight: bold;
+        }
+        .descriere {
+            font-size: 12px;
+            color: #a0a0a0;
+            margin-bottom: 5px;
+            line-height: 1.3;
+        }
+        input, select {
+            width: 100%;
+            padding: 10px;
+            background: #2d2d2d;
+            border: 1px solid #444;
+            color: #fff;
+            border-radius: 4px;
+            box-sizing: border-box;
+            font-size: 14px;
+        }
+        select option {
+            background: #1e1e1e;
+        }
+        button {
+            width: 100%;
+            padding: 12px;
+            background: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            cursor: pointer;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+        button:hover {
+            background: #45a049;
+        }
+        .results {
+            margin-top: 25px;
+            background: #252525;
+            padding: 15px;
+            border-radius: 6px;
+            border-left: 4px solid #4CAF50;
+        }
+        .results h3 {
+            margin-top: 0;
+            color: #4CAF50;
+        }
+        .result-item {
+            margin: 8px 0;
+            line-height: 1.4;
+        }
+        .warning {
+            background: #3a2a00;
+            border: 1px solid #d4af37;
+            padding: 10px;
+            border-radius: 4px;
+            color: #ffda6a;
+            margin-top: 12px;
+            font-size: 13px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Calculator Incinte Subwoofer</h2>
+    <div class="subtitle">Introdu datele tehnice ale difuzorului (din fișa lui tehnică)</div>
+    
+    <div class="form-group">
+        <label for="dimensiune_difuzor">1. Mărime difuzor (Diametru exterior):</label>
+        <div class="descriere">Dimensiunea fizică a cadrului. Ajută la verificarea dacă tubul de bass ales este destul de gros.</div>
+        <select id="dimensiune_difuzor" onchange="calculeaza()">
+            <option value="5">5 inchi (13 cm)</option>
+            <option value="6.5">6.5 inchi (16.5 cm)</option>
+            <option value="8">8 inchi (20 cm)</option>
+            <option value="10" selected>10 inchi (25 cm)</option>
+            <option value="12">12 inchi (30 cm)</option>
+            <option value="15">15 inchi (38 cm)</option>
+            <option value="18">18 inchi (46 cm)</option>
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label for="fs">2. Fs - Frecvența de rezonanță (Hz):</label>
+        <div class="descriere">Limita naturală de coborâre a difuzorului în aer liber. Cu cât e mai mică, cu atât scoate bass mai profund.</div>
+        <input type="number" id="fs" value="35.0" step="0.1" oninput="calculeaza()">
+    </div>
+
+    <div class="form-group">
+        <label for="qts">3. Qts - Factor de calitate total:</label>
+        <div class="descriere">Arată controlul magnetului asupra membranei. Sub 0.45 e ideal pentru Bass-Reflex; peste 0.45 e mai bun pentru cutie închisă.</div>
+        <input type="number" id="qts" value="0.40" step="0.01" oninput="calculeaza()">
+    </div>
+
+    <div class="form-group">
+        <label for="vas">4. Vas - Volum echivalent (litri):</label>
+        <div class="descriere">Flexibilitatea suspensiei difuzorului exprimată în litri de aer. Cu cât e mai mare, cu atât difuzorul va cere o boxă mai mare.</div>
+        <input type="number" id="vas" value="50.0" step="0.1" oninput="calculeaza()">
+    </div>
+
+    <div class="form-group">
+        <label for="qtc">5. Qtc dorit (Doar pentru Incintă Închisă):</label>
+        <div class="descriere">Calitatea sunetului în cutia închisă. Standardul perfect este <b>0.707</b> (răspuns plat și precis). Peste 0.8 bass-ul devine bubuit.</div>
+        <input type="number" id="qtc" value="0.707" step="0.001" oninput="calculeaza()">
+    </div>
+
+    <div class="form-group">
+        <label for="diametru">6. Diametru tub Bass-Reflex pe care vrei să-l pui (cm):</label>
+        <div class="descriere">Grosimea țevii de plastic pe care o montezi pe boxă. Dacă mărești diametrul, va trebui să lungești tubul.</div>
+        <input type="number" id="diametru" value="7.0" step="0.1" oninput="calculeaza()">
+    </div>
+
+    <button onclick="calculeaza()">Calculează Incintele</button>
+
+    <div class="results" id="rezultate">
+        <h3>Rezultate Calcul:</h3>
+        <div class="result-item">Introdu parametrii de mai sus pentru a vedea rezultatele.</div>
+    </div>
+</div>
+
+<script>
+function calculeaza() {
+    let fs = parseFloat(document.getElementById('fs').value);
+    let qts = parseFloat(document.getElementById('qts').value);
+    let vas = parseFloat(document.getElementById('vas').value);
+    let qtc_dorit = parseFloat(document.getElementById('qtc').value);
+    let diametru_cm = parseFloat(document.getElementById('diametru').value);
+    let dimensiune_dif = parseFloat(document.getElementById('dimensiune_difuzor').value);
+
+    let rezDiv = document.getElementById('rezultate');
+
+    if (isNaN(fs) || isNaN(qts) || isNaN(vas) || isNaN(qtc_dorit) || isNaN(diametru_cm)) {
+        rezDiv.innerHTML = `<h3>Eroare:</h3><div class="result-item" style="color: #ff6b6b;">Te rog introdu toate valorile numerice corect.</div>`;
+        return;
+    }
+
+    if (qtc_dorit <= qts) {
+        rezDiv.innerHTML = `<h3>Eroare:</h3><div class="result-item" style="color: #ff6b6b;"><b>Qtc dorit</b> trebuie să fie mai mare decât <b>Qts-ul difuzorului</b>! Altfel, cutia închisă ar trebui să fie infinit de mare.</div>`;
+        return;
+    }
+
+    // 1. Incinta Închisă
+    let vb_inchis = vas / (Math.pow(qtc_dorit / qts, 2) - 1);
+    let fc_inchis = fs * (qtc_dorit / qts);
+
+    // 2. Incinta Bass-Reflex
+    let vb_br = 15 * Math.pow(qts, 2.87) * vas;
+    let fb_br = 0.42 * fs * Math.pow(qts, -0.9);
+
+    // 3. Lungime tub Bass-Reflex (Helmholtz)
+    let c = 344.0;
+    let vb_m3 = vb_br / 1000.0;
+    let r_m = (diametru_cm / 100.0) / 2.0;
+    let s_m2 = Math.PI * Math.pow(r_m, 2);
+    let delta_m = 0.732 * (diametru_cm / 100.0);
+
+    let termen = (Math.pow(c, 2) * s_m2) / (4 * Math.pow(Math.PI, 2) * Math.pow(fb_br, 2) * vb_m3);
+    let lp_m = termen - delta_m;
+    let lungime_tub_cm = lp_m * 100.0;
+
+    // 4. Calcul diametru minim recomandat (Port Chuffing)
+    let diametru_minim_recomandat = 4.0; 
+    if (dimensiune_dif === 5) diametru_minim_recomandat = 4.5;
+    else if (dimensiune_dif === 6.5) diametru_minim_recomandat = 5.0;
+    else if (dimensiune_dif === 8) diametru_minim_recomandat = 6.5;
+    else if (dimensiune_dif === 10) diametru_minim_recomandat = 7.5;
+    else if (dimensiune_dif === 12) diametru_minim_recomandat = 10.0;
+    else if (dimensiune_dif === 15) diametru_minim_recomandat = 12.0;
+    else if (dimensiune_dif === 18) diametru_minim_recomandat = 15.0;
+
+    let avertisment_tub = "";
+    if (diametru_cm < diametru_minim_recomandat) {
+        avertisment_tub = `
+            <div class="warning">
+                <strong>⚠️ Risc de fâșâit (Turbulență aer):</strong> Tubul tău de ${diametru_cm} cm este prea îngust pentru un difuzor de ${dimensiune_dif}". Când difuzorul va mișca aerul la volum mare, se va auzi un fâșâit deranjant prin tub. Recomandat: folosește un tub de minim <strong>${diametru_minim_recomandat} cm</strong> grosime.
+            </div>
+        `;
+    }
+
+    let sectiune_tub_rezultat = "";
+    if (lungime_tub_cm <= 0) {
+        sectiune_tub_rezultat = `<div class="result-item" style="color: #ff6b6b;">&nbsp;&bull; Lungime tub necesară: <b>Imposibil fizic</b> (Volumul cutiei e prea mic sau tubul ales e prea gros. Mărește manual volumul sau alege un tub mai subțire).</div>`;
+    } else {
+        sectiune_tub_rezultat = `&nbsp;&bull; Lungime tub necesară (Lp): <strong>${lungime_tub_cm.toFixed(2)} cm</strong>`;
+    }
+
+    // Afișare rezultate clare
+    rezDiv.innerHTML = `
+        <h3>Rezultate Calcul:</h3>
+        
+        <div class="result-item"><strong>1. Varianta: Incintă Închisă (Sealed)</strong></div>
+        <div class="result-item">&nbsp;&bull; Volumul interior al cutiei (Vb): <strong>${vb_inchis.toFixed(2)} litri</strong></div>
+        <div class="result-item">&nbsp;&bull; Frecvența de rezonanță în cutie (Fc): <strong>${fc_inchis.toFixed(2)} Hz</strong> <span style="color: #888; font-size: 12px;">(De aici în jos basul începe să scadă treptat)</span></div>
+        
+        <hr style="border-color: #444; margin: 15px 0;">
+        
+        <div class="result-item"><strong>2. Varianta: Incintă Bass-Reflex (Vented)</strong></div>
+        <div class="result-item">&nbsp;&bull; Volumul interior optim al cutiei (Vb): <strong>${vb_br.toFixed(2)} litri</strong></div>
+eof
